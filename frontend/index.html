@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Luma — AI Todo</title>
+
+    <!-- FullCalendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.0/all/global.js"></script>
+
+    <!-- FullCalendar Theme -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.0/themes/classic/global.js"></script>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.0/skeleton.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.0/themes/classic/theme.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.0/themes/classic/palette.css"
+    >
+
+    <!-- Luma styling -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+</head>
+
+<body>
+
+    <div class="page">
+
+        <!-- ================= HEADER ================= -->
+
+        <header class="header">
+
+            <div class="brand">
+                <div class="brand-icon">✦</div>
+
+                <div>
+                    <h1>Luma</h1>
+                    <span>AI Todo Assistant</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+
+                <div class="today">
+                    <span class="today-label">TODAY</span>
+                    <span id="todayDate"></span>
+                </div>
+
+                <div class="status">
+                    <span class="status-dot"></span>
+                    Online
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= MAIN ================= -->
+
+        <main class="main-grid">
+
+
+            <!-- ================= CALENDAR ================= -->
+
+            <section class="card calendar-card">
+
+                <div class="calendar-top">
+
+                    <div>
+                        <p class="eyebrow">YOUR SCHEDULE</p>
+                        <h2>My Calendar</h2>
+                        <p class="calendar-subtitle">
+                            Your Google Calendar events and Luma tasks
+                        </p>
+                    </div>
+
+                    <a
+                        class="google-calendar-button"
+                        href="https://calendar.google.com/"
+                        target="_blank"
+                    >
+                        Open Google Calendar ↗
+                    </a>
+
+                </div>
+
+
+                <div id="calendar"></div>
+
+            </section>
+
+
+            <!-- ================= AI ASSISTANT ================= -->
+
+            <section class="card assistant-card">
+
+                <div class="assistant-glow"></div>
+
+                <div class="assistant-header">
+
+                    <div class="assistant-icon">
+                        ✦
+                    </div>
+
+                    <div>
+                        <p class="eyebrow">YOUR ASSISTANT</p>
+                        <h2>AI Command Center</h2>
+                    </div>
+
+                </div>
+
+
+                <div id="chatMessages" class="chat-messages">
+
+                    <div class="message assistant-message">
+
+                        <div class="message-avatar">
+                            ✦
+                        </div>
+
+                        <div class="message-content">
+
+                            <span class="message-name">
+                                Luma
+                            </span>
+
+                            <div class="message-bubble">
+                                Hey! What can I take care of for you?
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- QUICK PROMPTS -->
+
+                <div class="quick-prompts">
+
+                    <button onclick="usePrompt('What tasks do I have today?')">
+                        Today's tasks
+                    </button>
+
+                    <button onclick="usePrompt('How many tasks do I have pending?')">
+                        Pending tasks
+                    </button>
+
+                    <button onclick="usePrompt('Create a task to learn Django tomorrow at 7 PM.')">
+                        + Add task
+                    </button>
+
+                </div>
+
+
+                <!-- CHAT INPUT -->
+
+                <div class="chat-input-container">
+
+                    <textarea
+                        id="chatInput"
+                        placeholder="Tell me what you need..."
+                        rows="1"
+                    ></textarea>
+
+                    <button id="sendButton" class="send-button">
+                        ↑
+                    </button>
+
+                </div>
+
+                <div class="input-hint">
+                    Press Enter to send · Shift + Enter for a new line
+                </div>
+
+            </section>
+
+
+        </main>
+
+
+        <!-- ================= STATS ================= -->
+
+        <section class="stats-grid">
+
+            <div class="stat-card peach">
+
+                <div class="stat-icon">
+                    ◌
+                </div>
+
+                <div>
+                    <span>Pending</span>
+                    <strong id="pendingCount">—</strong>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card violet">
+
+                <div class="stat-icon">
+                    ◷
+                </div>
+
+                <div>
+                    <span>Today</span>
+                    <strong id="todayCount">—</strong>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card white">
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <span>Completed</span>
+                    <strong id="completedCount">—</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= TASKS ================= -->
+
+        <section class="card tasks-card">
+
+            <div class="section-header">
+
+                <div>
+                    <p class="eyebrow">PRODUCTIVITY</p>
+                    <h2>My Tasks</h2>
+                </div>
+
+                <div class="task-count">
+                    <span id="taskCount">0</span> tasks
+                </div>
+
+            </div>
+
+
+            <div id="taskList" class="task-list">
+
+                <div class="empty-state">
+                    Loading your tasks...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <footer>
+            <span>✦</span>
+            Powered by your AI task assistant
+        </footer>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
