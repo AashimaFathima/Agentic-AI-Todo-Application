@@ -1,5 +1,7 @@
 # Luma — Agentic AI Todo Application
 
+![Agentic AI Todo Application](Images/Image%201.png)
+
 Luma is an AI-powered task management application that combines a conversational AI assistant with task management and Google Calendar integration.
 
 ## Features
