@@ -6,6 +6,10 @@ from calendar_service import (
     update_calendar_event,
 )
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 @tool
 def create_task(
     title: str,
@@ -15,6 +19,7 @@ def create_task(
     """
     Create a new todo task.
     """
+    logger.info("Creating task: title=%s", title)
 
     calendar_event_id = None
     calendar_link = None
@@ -27,14 +32,8 @@ def create_task(
             start_datetime=due_date,
         )
 
-        print("Calendar returned:", calendar)
-
         calendar_event_id = calendar["event_id"]
         calendar_link = calendar["calendar_link"]
-
-        print("Event ID:", calendar_event_id)
-
-    print("Passing to models:", calendar_event_id)
 
     task = models.create_task(
         title,
@@ -42,6 +41,8 @@ def create_task(
         due_date,
         calendar_event_id,
     )
+
+    logger.info("Task created successfully: id=%s", task["id"])
 
     task["calendar_link"] = calendar_link
 
@@ -84,7 +85,8 @@ def update_task(
     due_date should be an ISO datetime when provided.
     """
 
-    # Get the existing task first
+    logger.info("Updating task: id=%s", task_id)
+
     task = models.get_task(task_id)
 
     if task is None:
@@ -137,6 +139,8 @@ def delete_task(
     Use task_id when the user provides a task ID.
     Use title when the user identifies the task by its title.
     """
+
+    logger.info("Deleting task: id=%s, title=%s", task_id, title)
 
     if task_id is not None:
         return models.delete_task(task_id)

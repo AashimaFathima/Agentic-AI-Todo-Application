@@ -11,6 +11,15 @@ import models
 
 from calendar_service import get_calendar_events
 
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+)
+
+logger = logging.getLogger(__name__)
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     initialize_database()
@@ -38,12 +47,19 @@ class ChatRequest(BaseModel): # Structure of the data that the endpoint expects
 
 @app.post("/chat")
 async def chat(request: ChatRequest):
+    logger.info("Received chat request")
 
-    response = agent.run(request.message) # The natural language instruction that you send that hands the instruction to the Agno agent
+    try:
+        response = agent.run(request.message)
+        logger.info("Chat request processed successfully")
 
-    return {
-        "response": response.content
-    }
+        return {
+            "response": response.content
+        }
+
+    except Exception:
+        logger.exception("Failed to process chat request")
+        raise
 
 @app.get("/tasks")
 async def get_tasks():
